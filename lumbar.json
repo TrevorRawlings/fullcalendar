@@ -33,7 +33,7 @@
         "src/main.js",
         "src/Calendar.js",
         "src/Header.js",
-        "src/EventManager.js",
+        "build/temp/EventManager.js",
         "src/date_util.js",
         "src/util.js",
         "src/basic/MonthView.js",

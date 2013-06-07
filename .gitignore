@@ -2,7 +2,10 @@ build/out
 build/archive
 build/component
 build/cdn
+build/temp/
 dist
+
+.idea/
 
 # for npm
 node_modules

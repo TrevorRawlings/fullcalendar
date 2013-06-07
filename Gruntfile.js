@@ -10,6 +10,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-compress');
 	grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-coffee');
 	grunt.loadNpmTasks('lumbar');
 
 	// Parse config files
@@ -34,9 +35,22 @@ module.exports = function(grunt) {
 	grunt.registerTask('default', 'archive');
 
 	// Bare minimum for debugging
-	grunt.registerTask('dev', 'lumbar:build');
+	grunt.registerTask('dev', ['coffee', 'lumbar:build']);
 
 
+
+    /* coffee script */
+
+    config.coffee = {
+        compile: {
+            files: {
+                'build/temp/EventManager.js': 'src/EventManager*.coffee'
+            },
+            options: {
+                basePath: 'src/'
+            }
+        }
+    },
 
 	/* FullCalendar Modules
 	----------------------------------------------------------------------------------------------------*/
