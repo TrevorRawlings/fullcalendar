@@ -3,7 +3,11 @@
 function Calendar(element, options, eventSources) {
 	var t = this;
 	
-	
+	// check date & dateTime converters have been supplied
+    if ((!options.dateConverter) || (!options.dateTimerConverter)) {
+        throw "converters missing";
+    }
+
 	// exports
 	t.options = options;
 	t.render = render;
@@ -19,6 +23,8 @@ function Calendar(element, options, eventSources) {
 	t.next = next;
 	t.prevYear = prevYear;
 	t.nextYear = nextYear;
+    t.prevWeek = prevWeek;
+    t.nextWeek = nextWeek;
 	t.today = today;
 	t.gotoDate = gotoDate;
 	t.incrementDate = incrementDate;
@@ -33,9 +39,7 @@ function Calendar(element, options, eventSources) {
 	// imports
 	var eventManager = new fc.EventManager(t, options, eventSources);
 
-	var isFetchNeeded = t.isFetchNeeded;
-	var fetchEvents = t.fetchEvents;
-	
+
 	
 	// locals
 	var _element = element[0];
@@ -317,7 +321,7 @@ function Calendar(element, options, eventSources) {
 	
 	// fetches events if necessary, rerenders events if necessary (or if forced)
 	function updateEvents(forceRender) {
-		if (!options.lazyFetching || isFetchNeeded(currentView.visStart, currentView.visEnd)) {
+		if (!options.lazyFetching || eventManager.isFetchNeeded(currentView.visStart, currentView.visEnd)) {
 			refetchEvents();
 		}
 		else if (forceRender) {
@@ -325,9 +329,9 @@ function Calendar(element, options, eventSources) {
 		}
 	}
 	
-	
+	// public method
 	function refetchEvents() {
-		fetchEvents(currentView.visStart, currentView.visEnd); // will call reportEvents
+        eventManager.fetchEvents(currentView.visStart, currentView.visEnd); // will call reportEvents
 	}
 	
 	
@@ -385,14 +389,15 @@ function Calendar(element, options, eventSources) {
 	
 	
 	function prev() {
+        addMonths(date, -1, false);
 		renderView(-1);
 	}
 	
 	
 	function next() {
+        addMonths(date, 1, false);
 		renderView(1);
 	}
-	
 	
 	function prevYear() {
 		addYears(date, -1);
@@ -404,7 +409,19 @@ function Calendar(element, options, eventSources) {
 		addYears(date, 1);
 		renderView();
 	}
-	
+
+
+    function prevWeek() {
+        addDays(date, -7);
+        renderView(1);
+    }
+
+
+    function nextWeek() {
+        addDays(date, 7);
+        renderView(1);
+    }
+
 	
 	function today() {
 		date = new Date();
@@ -432,7 +449,7 @@ function Calendar(element, options, eventSources) {
 		if (days !== undefined) {
 			addDays(date, days);
 		}
-		renderView();
+		renderView(1);
 	}
 	
 	
@@ -463,12 +480,11 @@ function Calendar(element, options, eventSources) {
 	
 	
 	function trigger(name, thisObj) {
+        var event_context = options.event_context || thisObj || _element
 		if (options[name]) {
-			return options[name].apply(
-				thisObj || _element,
-				Array.prototype.slice.call(arguments, 2)
-			);
+			return options[name].apply(event_context, Array.prototype.slice.call(arguments, 1));
 		}
+        return null
 	}
 	
 	

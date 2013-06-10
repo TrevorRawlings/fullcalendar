@@ -132,6 +132,7 @@ function DayEventRenderer() {
 		var right;
 		var skinCss;
 		var html = '';
+        var title_html = ''
 		// calculate desired position/dimensions, create html
 		for (i=0; i<segCnt; i++) {
 			seg = segs[i];
@@ -179,8 +180,12 @@ function DayEventRenderer() {
 					htmlEscape(formatDates(event.start, event.end, opt('timeFormat'))) +
 					"</span>";
 			}
+            title_html = trigger('eventTitleHtml', event);
+            if (!title_html) {
+                title_html = htmlEscape(event.title);
+            }
 			html +=
-				"<span class='fc-event-title'>" + htmlEscape(event.title) + "</span>" +
+				"<span class='fc-event-title'>" + title_html + "</span>" +
 				"</div>";
 			if (seg.isEnd && isEventResizable(event)) {
 				html +=

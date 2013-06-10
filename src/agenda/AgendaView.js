@@ -193,7 +193,7 @@ function AgendaView(element, calendar, viewName) {
 		var slotNormal = opt('slotMinutes') % 15 == 0;
 		
 		s =
-			"<table style='width:100%' class='fc-agenda-days fc-border-separate' cellspacing='0'>" +
+			"<table style='width:100%' class='fc-table fc-agenda-days fc-border-separate' cellspacing='0'>" +
 			"<thead>" +
 			"<tr>";
 
@@ -298,7 +298,7 @@ function AgendaView(element, calendar, viewName) {
 				.appendTo(slotContent);
 		
 		s =
-			"<table class='fc-agenda-slots' style='width:100%' cellspacing='0'>" +
+			"<table class='fc-table fc-agenda-slots' style='width:100%' cellspacing='0'>" +
 			"<tbody>";
 		d = zeroDate();
 		maxd = addMinutes(cloneDate(d), maxMinute);

@@ -14,16 +14,16 @@ function MonthView(element, calendar) {
 	var opt = t.opt;
 	var renderBasic = t.renderBasic;
 	var formatDate = calendar.formatDate;
-	
-	
+
+
+
 	
 	function render(date, delta) {
-		if (delta) {
-			addMonths(date, delta);
-			date.setDate(1);
-		}
+        //		if (delta) {
+        //			addMonths(date, delta);
+        //			date.setDate(1);
+        //		}
 		var start = cloneDate(date, true);
-		start.setDate(1);
 		var end = addMonths(cloneDate(start), 1);
 		var visStart = cloneDate(start);
 		var visEnd = cloneDate(end);
@@ -40,7 +40,7 @@ function MonthView(element, calendar) {
 			addDays(visEnd, (6 - rowCnt) * 7);
 			rowCnt = 6;
 		}
-		t.title = formatDate(start, opt('titleFormat'));
+		t.title = formatDate(t.center_date(visStart, visEnd), opt('titleFormat'));
 		t.start = start;
 		t.end = end;
 		t.visStart = visStart;

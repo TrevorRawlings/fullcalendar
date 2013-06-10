@@ -33,7 +33,8 @@ function BasicView(element, calendar, viewName) {
 	t.getColCnt = function() { return colCnt };
 	t.getColWidth = function() { return colWidth };
 	t.getDaySegmentContainer = function() { return daySegmentContainer };
-	
+    t.center_date = center_date;
+
 	
 	// imports
 	View.call(t, element, calendar, viewName);
@@ -136,21 +137,34 @@ function BasicView(element, calendar, viewName) {
 			$("<div style='position:absolute;z-index:8;top:0;left:0'/>")
 				.appendTo(element);
 	}
+
+    function center_date(visStart, visEnd) {
+        var visStart = moment(visStart);
+        var visEnd = moment(visEnd);
+        var days = visEnd.diff(visStart, 'days');
+        return visStart.clone().add('days', (days / 2)).toDate();
+    }
 	
-	
+	function center_month() {
+      return center_date(t.visStart, t.visEnd).getMonth();
+    }
 	
 	function buildTable(showNumbers) {
 		var html = '';
 		var i, j;
 		var headerClass = tm + "-widget-header";
 		var contentClass = tm + "-widget-content";
-		var month = t.start.getMonth();
+		var month = center_month();
 		var today = clearTime(new Date());
 		var cellDate; // not to be confused with local function. TODO: better names
 		var cellClasses;
 		var cell;
+        var isToday;
+        var day_number
+        var show_month
 
-		html += "<table class='fc-border-separate' style='width:100%' cellspacing='0'>" +
+
+        html += "<table class='fc-table fc-border-separate' style='width:100%' cellspacing='0'>" +
 		        "<thead>" +
 		        "<tr>";
 
@@ -178,6 +192,7 @@ function BasicView(element, calendar, viewName) {
 
 			for (j=0; j<colCnt; j++) {
 				cellDate = _cellDate(i, j); // a little confusing. cellDate is local variable. _cellDate is private function
+                isToday = (+cellDate == +today);
 
 				cellClasses = [
 					'fc-day',
@@ -187,18 +202,26 @@ function BasicView(element, calendar, viewName) {
 				if (cellDate.getMonth() != month) {
 					cellClasses.push('fc-other-month');
 				}
-				if (+cellDate == +today) {
+				if (isToday) {
 					cellClasses.push('fc-today');
 					cellClasses.push(tm + '-state-highlight');
 				}
 
 				html += "<td" +
 				        " class='" + cellClasses.join(' ') + "'" +
-				        " data-date='" + formatDate(cellDate, 'yyyy-MM-dd') + "'" +
+				        " data-date='" + t.calendar.options.dateConverter.fromDateToString(cellDate) + "'" +
 				        ">" + 
 				        "<div>";
 				if (showNumbers) {
-					html += "<div class='fc-day-number'>" + cellDate.getDate() + "</div>";
+                    day_number = cellDate.getDate()
+					html += "<div class='fc-day-number'>" + cellDate.getDate()
+                    if ((day_number == 1) || ( i==0 && j ==0)) {
+                        html += formatDate(cellDate, " MMM");
+                    }
+                    if (isToday) {
+                        html += " - today";
+                    }
+                    html += "</div>";
 				}
 				html += "<div class='fc-day-content'>" +
 				        "<div style='position:relative'>&nbsp;</div>" +
@@ -313,7 +336,8 @@ function BasicView(element, calendar, viewName) {
 	
 	function dayClick(ev) {
 		if (!opt('selectable')) { // if selectable, SelectionManager will worry about dayClick
-			var date = parseISO8601($(this).data('date'));
+			var date = $(this).data('date')
+            date = t.calendar.options.dateConverter.fromStringToDate(date)
 			trigger('dayClick', this, date, true, ev);
 		}
 	}

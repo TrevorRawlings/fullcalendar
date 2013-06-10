@@ -27,8 +27,12 @@ $.fn.fullCalendar = function(options) {
 		}
 		return this;
 	}
-	
-	
+
+
+    // Take a copy of the object so as to not pollute it and generate buggy situations
+    // https://github.com/arshaw/fullcalendar/pull/97
+    options = $.extend({}, options);
+
 	// would like to have this logic in EventManager, but needs to happen before options are recursively extended
 	var eventSources = options.eventSources || [];
 	delete options.eventSources;
