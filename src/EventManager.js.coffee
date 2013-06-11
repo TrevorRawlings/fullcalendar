@@ -133,15 +133,15 @@ class fc.EventManager
 
       delete event.date;
 
-    event._start = cloneDate(event.start = parseDate(event.start));
+    event._start = fc.dateUtil.cloneDate(event.start = fc.dateUtil.parseDate(event.start));
     if event.end
-      event.end = parseDate(event.end);
+      event.end = fc.dateUtil.parseDate(event.end);
       event.end = null if event.end <= event.start
 
 
-    event._end = if event.end then cloneDate(event.end) else null
+    event._end = if event.end then fc.dateUtil.cloneDate(event.end) else null
     if _.isUndefined(event.allDay)
-      event.allDay = firstDefined(source.allDayDefault, options.allDayDefault);
+      event.allDay = fc.util.firstDefined(source.allDayDefault, options.allDayDefault);
 
     if event.className
       if _.isString(event.className)

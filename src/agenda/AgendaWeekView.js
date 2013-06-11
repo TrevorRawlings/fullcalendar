@@ -1,5 +1,5 @@
 
-fcViews.agendaWeek = AgendaWeekView;
+fc.views.agendaWeek = AgendaWeekView;
 
 function AgendaWeekView(element, calendar) {
 	var t = this;
@@ -13,26 +13,26 @@ function AgendaWeekView(element, calendar) {
 	AgendaView.call(t, element, calendar, 'agendaWeek');
 	var opt = t.opt;
 	var renderAgenda = t.renderAgenda;
-	var formatDates = calendar.formatDates;
+	//var formatDates = calendar.formatDates;
 	
 	
 	
 	function render(date, delta) {
 		if (delta) {
-			addDays(date, delta * 7);
+            fc.dateUtil.addDays(date, delta * 7);
 		}
-		var start = addDays(cloneDate(date), -((date.getDay() - opt('firstDay') + 7) % 7));
-		var end = addDays(cloneDate(start), 7);
-		var visStart = cloneDate(start);
-		var visEnd = cloneDate(end);
+		var start = fc.dateUtil.addDays(fc.dateUtil.cloneDate(date), -((date.getDay() - opt('firstDay') + 7) % 7));
+		var end = fc.dateUtil.addDays(fc.dateUtil.cloneDate(start), 7);
+		var visStart = fc.dateUtil.cloneDate(start);
+		var visEnd = fc.dateUtil.cloneDate(end);
 		var weekends = opt('weekends');
 		if (!weekends) {
-			skipWeekend(visStart);
-			skipWeekend(visEnd, -1, true);
+            fc.dateUtil.skipWeekend(visStart);
+            fc.dateUtil.skipWeekend(visEnd, -1, ['Sunday', 'Monday']);
 		}
-		t.title = formatDates(
+		t.title = fc.dateUtil.formatDates(
 			visStart,
-			addDays(cloneDate(visEnd), -1),
+            fc.dateUtil.addDays(fc.dateUtil.cloneDate(visEnd), -1),
 			opt('titleFormat')
 		);
 		t.start = start;

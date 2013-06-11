@@ -10,8 +10,7 @@
     "fullcalendar": {
       "modules": [
         "fullcalendar",
-        "fullcalendar.print",
-        "gcal"
+        "fullcalendar.print"
       ]
     }
   },
@@ -30,22 +29,19 @@
       "scripts": [
         "src/intro.js",
         "src/defaults.js",
-        "src/main.js",
-        "src/Calendar.js",
-        "src/Header.js",
+        "build/temp/Calendar.js",
         "build/temp/EventManager.js",
-        "src/date_util.js",
+        "build/temp/date_util.js",
+        "build/temp/Navigate.js",
         "src/util.js",
-        "src/basic/MonthView.js",
-        "src/basic/BasicWeekView.js",
-        "src/basic/BasicDayView.js",
-        "src/basic/BasicView.js",
+        "build/temp/CoordinateGrid.js",
+        "build/temp/View.js",
+        "build/temp/BasicView.js",
+        "build/temp/MonthView.js",
         "src/basic/BasicEventRenderer.js",
-        "src/common/View.js",
         "src/common/DayEventRenderer.js",
         "src/common/SelectionManager.js",
         "src/common/OverlayManager.js",
-        "src/common/CoordinateGrid.js",
         "src/common/HoverListener.js",
         "src/common/HorizontalPositionCache.js",
         "src/outro.js"
@@ -60,11 +56,6 @@
     "fullcalendar.print": {
       "styles": [
         "src/common/print.css"
-      ]
-    },
-    "gcal": {
-      "scripts": [
-        "src/gcal/gcal.js"
       ]
     }
   }

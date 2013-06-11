@@ -9,31 +9,31 @@ function DayEventRenderer() {
 	
 	
 	// imports
-	var opt = t.opt;
-	var trigger = t.trigger;
-	var isEventDraggable = t.isEventDraggable;
-	var isEventResizable = t.isEventResizable;
-	var eventEnd = t.eventEnd;
-	var reportEventElement = t.reportEventElement;
-	var showEvents = t.showEvents;
-	var hideEvents = t.hideEvents;
-	var eventResize = t.eventResize;
-	var getRowCnt = t.getRowCnt;
-	var getColCnt = t.getColCnt;
-	var getColWidth = t.getColWidth;
-	var allDayRow = t.allDayRow;
-	var allDayBounds = t.allDayBounds;
-	var colContentLeft = t.colContentLeft;
-	var colContentRight = t.colContentRight;
-	var dayOfWeekCol = t.dayOfWeekCol;
-	var dateCell = t.dateCell;
-	var compileDaySegs = t.compileDaySegs;
-	var getDaySegmentContainer = t.getDaySegmentContainer;
-	var bindDaySeg = t.bindDaySeg; //TODO: streamline this
-	var formatDates = t.calendar.formatDates;
-	var renderDayOverlay = t.renderDayOverlay;
-	var clearOverlays = t.clearOverlays;
-	var clearSelection = t.clearSelection;
+	//var opt = t.opt;
+	//var trigger = t.trigger;
+	//var isEventDraggable = t.isEventDraggable;
+	//var isEventResizable = t.isEventResizable;
+	//var eventEnd = t.eventEnd;
+	//var reportEventElement = t.reportEventElement;
+	//var showEvents = t.showEvents;
+	//var hideEvents = t.hideEvents;
+	//var eventResize = t.eventResize;
+	//var getRowCnt = t.getRowCnt;
+	//var getColCnt = t.getColCnt;
+	//var getColWidth = t.getColWidth;
+	//var allDayRow = t.allDayRow;
+	//var allDayBounds = t.allDayBounds;
+	//var colContentLeft = t.colContentLeft;
+	//var colContentRight = t.colContentRight;
+	//var dayOfWeekCol = t.dayOfWeekCol;
+	//var dateCell = t.dateCell;
+	//var compileDaySegs = t.compileDaySegs;
+	//var getDaySegmentContainer = t.getDaySegmentContainer;
+	//var bindDaySeg = t.bindDaySeg; //TODO: streamline this
+	//var formatDates = t.calendar.formatDates;
+	//var renderDayOverlay = t.renderDayOverlay;
+	//var clearOverlays = t.clearOverlays;
+	//var clearSelection = t.clearSelection;
 	
 	
 	
@@ -42,10 +42,10 @@ function DayEventRenderer() {
 	
 	
 	function renderDaySegs(segs, modifiedEventId) {
-		var segmentContainer = getDaySegmentContainer();
+		var segmentContainer = t.getDaySegmentContainer();
 		var rowDivs;
-		var rowCnt = getRowCnt();
-		var colCnt = getColCnt();
+		var rowCnt = t.getRowCnt();
+		var colCnt = t.getColCnt();
 		var i = 0;
 		var rowI;
 		var levelI;
@@ -72,7 +72,7 @@ function DayEventRenderer() {
 			}
 			while (i<segCnt && (seg = segs[i]).row == rowI) {
 				// loop through segs in a row
-				top = arrayMax(colHeights.slice(seg.startCol, seg.endCol));
+				top = _.max(colHeights.slice(seg.startCol, seg.endCol));
 				seg.top = top;
 				top += seg.outerHeight;
 				for (k=seg.startCol; k<seg.endCol; k++) {
@@ -80,7 +80,7 @@ function DayEventRenderer() {
 				}
 				i++;
 			}
-			rowDivs[rowI].height(arrayMax(colHeights));
+			rowDivs[rowI].height(_.max(colHeights));
 		}
 		daySegSetTops(segs, getRowTops(rowDivs));
 	}
@@ -89,7 +89,7 @@ function DayEventRenderer() {
 	function renderTempDaySegs(segs, adjustRow, adjustTop) {
 		var tempContainer = $("<div/>");
 		var elements;
-		var segmentContainer = getDaySegmentContainer();
+		var segmentContainer = t.getDaySegmentContainer();
 		var i;
 		var segCnt = segs.length;
 		var element;
@@ -116,14 +116,14 @@ function DayEventRenderer() {
 	
 	
 	function daySegHTML(segs) { // also sets seg.left and seg.outerWidth
-		var rtl = opt('isRTL');
+		var rtl = t.opt('isRTL');
 		var i;
 		var segCnt=segs.length;
 		var seg;
 		var event;
 		var url;
 		var classes;
-		var bounds = allDayBounds();
+		var bounds = t.allDayBounds();
 		var minLeft = bounds.left;
 		var maxLeft = bounds.right;
 		var leftCol;
@@ -138,7 +138,7 @@ function DayEventRenderer() {
 			seg = segs[i];
 			event = seg.event;
 			classes = ['fc-event', 'fc-event-hori'];
-			if (isEventDraggable(event)) {
+			if (t.isEventDraggable(event)) {
 				classes.push('fc-event-draggable');
 			}
 			if (seg.isStart) {
@@ -148,24 +148,24 @@ function DayEventRenderer() {
 				classes.push('fc-event-end');
 			}
 			if (rtl) {
-				leftCol = dayOfWeekCol(seg.end.getDay()-1);
-				rightCol = dayOfWeekCol(seg.start.getDay());
-				left = seg.isEnd ? colContentLeft(leftCol) : minLeft;
-				right = seg.isStart ? colContentRight(rightCol) : maxLeft;
+				leftCol =  t.dayOfWeekCol(seg.end.getDay()-1);
+				rightCol =  t.dayOfWeekCol(seg.start.getDay());
+				left = seg.isEnd ? t.colContentLeft(leftCol) : minLeft;
+				right = seg.isStart ? t.colContentRight(rightCol) : maxLeft;
 			}else{
-				leftCol = dayOfWeekCol(seg.start.getDay());
-				rightCol = dayOfWeekCol(seg.end.getDay()-1);
-				left = seg.isStart ? colContentLeft(leftCol) : minLeft;
-				right = seg.isEnd ? colContentRight(rightCol) : maxLeft;
+				leftCol =  t.dayOfWeekCol(seg.start.getDay());
+				rightCol =  t.dayOfWeekCol(seg.end.getDay()-1);
+				left = seg.isStart ? t.colContentLeft(leftCol) : minLeft;
+				right = seg.isEnd ? t.colContentRight(rightCol) : maxLeft;
 			}
 			classes = classes.concat(event.className);
 			if (event.source) {
 				classes = classes.concat(event.source.className || []);
 			}
 			url = event.url;
-			skinCss = getSkinCss(event, opt);
+			skinCss = fc.util.getSkinCss(event, t);
 			if (url) {
-				html += "<a href='" + htmlEscape(url) + "'";
+				html += "<a href='" + _.string.escapeHTML(url) + "'";
 			}else{
 				html += "<div";
 			}
@@ -177,17 +177,17 @@ function DayEventRenderer() {
 			if (!event.allDay && seg.isStart) {
 				html +=
 					"<span class='fc-event-time'>" +
-					htmlEscape(formatDates(event.start, event.end, opt('timeFormat'))) +
+                        _.string.escapeHTML(fc.dateUtil.formatDates(event.start, event.end, t.opt('timeFormat'))) +
 					"</span>";
 			}
-            title_html = trigger('eventTitleHtml', event);
+            title_html = t.trigger('eventTitleHtml', event);
             if (!title_html) {
-                title_html = htmlEscape(event.title);
+                title_html = _.string.escapeHTML(event.title);
             }
 			html +=
 				"<span class='fc-event-title'>" + title_html + "</span>" +
 				"</div>";
-			if (seg.isEnd && isEventResizable(event)) {
+			if (seg.isEnd && t.isEventResizable(event)) {
 				html +=
 					"<div class='ui-resizable-handle ui-resizable-" + (rtl ? 'w' : 'e') + "'>" +
 					"&nbsp;&nbsp;&nbsp;" + // makes hit area a lot better for IE6/7
@@ -215,7 +215,7 @@ function DayEventRenderer() {
 			seg = segs[i];
 			event = seg.event;
 			element = $(elements[i]); // faster than .eq()
-			triggerRes = trigger('eventRender', event, event, element);
+			triggerRes = t.trigger('eventRender', event, event, element);
 			if (triggerRes === false) {
 				element.remove();
 			}else{
@@ -229,6 +229,7 @@ function DayEventRenderer() {
 					element = triggerRes;
 				}
 				seg.element = element;
+                element.data('fc-event', event)
 			}
 		}
 	}
@@ -243,7 +244,7 @@ function DayEventRenderer() {
 			seg = segs[i];
 			element = seg.element;
 			if (element) {
-				reportEventElement(seg.event, element);
+				t.reportEventElement(seg.event, element);
 			}
 		}
 	}
@@ -262,13 +263,13 @@ function DayEventRenderer() {
 			if (element) {
 				event = seg.event;
 				if (event._id === modifiedEventId) {
-					bindDaySeg(event, element, seg);
+					t.bindDaySeg(event, element, seg);
 				}else{
 					element[0]._fci = i; // for lazySegBind
 				}
 			}
 		}
-		lazySegBind(segmentContainer, segs, bindDaySeg);
+        fc.util.lazySegBind(segmentContainer, segs, t.bindDaySeg);
 	}
 	
 	
@@ -284,10 +285,10 @@ function DayEventRenderer() {
 			seg = segs[i];
 			element = seg.element;
 			if (element) {
-				key = seg.key = cssKey(element[0]);
+				key = seg.key = fc.util.cssKey(element[0]);
 				val = hsideCache[key];
 				if (val === undefined) {
-					val = hsideCache[key] = hsides(element, true);
+					val = hsideCache[key] = fc.util.hsides(element, true);
 				}
 				seg.hsides = val;
 			}
@@ -325,7 +326,7 @@ function DayEventRenderer() {
 				key = seg.key; // created in daySegCalcHSides
 				val = vmarginCache[key];
 				if (val === undefined) {
-					val = vmarginCache[key] = vmargins(element);
+					val = vmarginCache[key] = fc.util.vmargins(element);
 				}
 				seg.outerHeight = element[0].offsetHeight + val;
 			}
@@ -335,10 +336,10 @@ function DayEventRenderer() {
 	
 	function getRowDivs() {
 		var i;
-		var rowCnt = getRowCnt();
+		var rowCnt = t.getRowCnt();
 		var rowDivs = [];
 		for (i=0; i<rowCnt; i++) {
-			rowDivs[i] = allDayRow(i)
+			rowDivs[i] = t.allDayRow(i)
 				.find('div.fc-day-content > div'); // optimal selector?
 		}
 		return rowDivs;
@@ -368,7 +369,7 @@ function DayEventRenderer() {
 			if (element) {
 				element[0].style.top = rowTops[seg.row] + (seg.top||0) + 'px';
 				event = seg.event;
-				trigger('eventAfterRender', event, event, element);
+				t.trigger('eventAfterRender', event, event, element);
 			}
 		}
 	}
@@ -380,13 +381,13 @@ function DayEventRenderer() {
 	
 	
 	function resizableDayEvent(event, element, seg) {
-		var rtl = opt('isRTL');
+		var rtl = t.opt('isRTL');
 		var direction = rtl ? 'w' : 'e';
 		var handle = element.find('.ui-resizable-' + direction); // TODO: stop using this class because we aren't using jqui for this
 		var isResizing = false;
 		
 		// TODO: look into using jquery-ui mouse widget for this stuff
-		disableTextSelection(element); // prevent native <a> selection for IE
+        fc.util.disableTextSelection(element); // prevent native <a> selection for IE
 		element
 			.mousedown(function(ev) { // prevent native <a> selection for others
 				ev.preventDefault();
@@ -405,20 +406,20 @@ function DayEventRenderer() {
 			}
 			isResizing = true;
 			var hoverListener = t.getHoverListener();
-			var rowCnt = getRowCnt();
-			var colCnt = getColCnt();
+			var rowCnt = t.getRowCnt();
+			var colCnt = t.getColCnt();
 			var dis = rtl ? -1 : 1;
 			var dit = rtl ? colCnt-1 : 0;
 			var elementTop = element.css('top');
 			var dayDelta;
 			var helpers;
 			var eventCopy = $.extend({}, event);
-			var minCell = dateCell(event.start);
-			clearSelection();
+			var minCell = t.dateCell(event.start);
+			t.clearSelection();
 			$('body')
 				.css('cursor', direction + '-resize')
 				.one('mouseup', mouseup);
-			trigger('eventResizeStart', this, event, ev);
+			t.trigger('eventResizeStart', this, event, ev);
 			hoverListener.start(function(cell, origCell) {
 				if (cell) {
 					var r = Math.max(minCell.row, cell.row);
@@ -434,35 +435,35 @@ function DayEventRenderer() {
 						}
 					}
 					dayDelta = (r*7 + c*dis+dit) - (origCell.row*7 + origCell.col*dis+dit);
-					var newEnd = addDays(eventEnd(event), dayDelta, true);
+					var newEnd = fc.dateUtil.addDays(t.eventEnd(event), dayDelta, true);
 					if (dayDelta) {
 						eventCopy.end = newEnd;
 						var oldHelpers = helpers;
-						helpers = renderTempDaySegs(compileDaySegs([eventCopy]), seg.row, elementTop);
+						helpers = renderTempDaySegs(t.compileDaySegs([eventCopy]), seg.row, elementTop);
 						helpers.find('*').css('cursor', direction + '-resize');
 						if (oldHelpers) {
 							oldHelpers.remove();
 						}
-						hideEvents(event);
+						t.hideEvents(event);
 					}else{
 						if (helpers) {
-							showEvents(event);
+							t.showEvents(event);
 							helpers.remove();
 							helpers = null;
 						}
 					}
-					clearOverlays();
-					renderDayOverlay(event.start, addDays(cloneDate(newEnd), 1)); // coordinate grid already rebuild at hoverListener.start
+					t.clearOverlays();
+					t.renderDayOverlay(event.start, fc.dateUtil.addDays(fc.dateUtil.cloneDate(newEnd), 1)); // coordinate grid already rebuild at hoverListener.start
 				}
 			}, ev);
 			
 			function mouseup(ev) {
-				trigger('eventResizeStop', this, event, ev);
+				t.trigger('eventResizeStop', this, event, ev);
 				$('body').css('cursor', '');
 				hoverListener.stop();
-				clearOverlays();
+				t.clearOverlays();
 				if (dayDelta) {
-					eventResize(this, event, dayDelta, 0, ev);
+					t.eventResize(this, event, dayDelta, 0, ev);
 					// event redraw will clear helpers
 				}
 				// otherwise, the drag handler already restored the old events

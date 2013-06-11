@@ -46,8 +46,8 @@ function AgendaEventRenderer() {
 	var renderDayOverlay = t.renderDayOverlay;
 	var clearOverlays = t.clearOverlays;
 	var calendar = t.calendar;
-	var formatDate = calendar.formatDate;
-	var formatDates = calendar.formatDates;
+	//var formatDate = calendar.formatDate;
+	//var formatDates = calendar.formatDates;
 	
 	
 	
@@ -84,7 +84,7 @@ function AgendaEventRenderer() {
 	
 	
 	function compileDaySegs(events) {
-		var levels = stackSegs(sliceSegs(events, $.map(events, exclEndDay), t.visStart, t.visEnd)),
+		var levels = fc.util.stackSegs(fc.util.sliceSegs(events, $.map(events, fc.util.exclEndDay), t.visStart, t.visEnd)),
 			i, levelCnt=levels.length, level,
 			j, seg,
 			segs=[];
@@ -105,14 +105,14 @@ function AgendaEventRenderer() {
 		var colCnt = getColCnt(),
 			minMinute = getMinMinute(),
 			maxMinute = getMaxMinute(),
-			d = addMinutes(cloneDate(t.visStart), minMinute),
+			d = addMinutes(fc.dateUtil.cloneDate(t.visStart), minMinute),
 			visEventEnds = $.map(events, slotEventEnd),
 			i, col,
 			j, level,
 			k, seg,
 			segs=[];
 		for (i=0; i<colCnt; i++) {
-			col = stackSegs(sliceSegs(events, visEventEnds, d, addMinutes(cloneDate(d), maxMinute-minMinute)));
+			col = fc.util.stackSegs(fc.util.sliceSegs(events, visEventEnds, d, addMinutes(fc.dateUtil.cloneDate(d), maxMinute-minMinute)));
 			countForwardSegs(col);
 			for (j=0; j<col.length; j++) {
 				level = col[j];
@@ -123,7 +123,7 @@ function AgendaEventRenderer() {
 					segs.push(seg);
 				}
 			}
-			addDays(d, 1, true);
+            fc.dateUtil.addDays(d, 1, true);
 		}
 		return segs;
 	}
@@ -131,9 +131,9 @@ function AgendaEventRenderer() {
 	
 	function slotEventEnd(event) {
 		if (event.end) {
-			return cloneDate(event.end);
+			return fc.dateUtil.cloneDate(event.end);
 		}else{
-			return addMinutes(cloneDate(event.start), opt('defaultEventMinutes'));
+			return addMinutes(fc.dateUtil.cloneDate(event.start), opt('defaultEventMinutes'));
 		}
 	}
 	
@@ -236,14 +236,14 @@ function AgendaEventRenderer() {
 				reportEventElement(event, eventElement);
 			}
 		}
-		
-		lazySegBind(slotSegmentContainer, segs, bindSlotSeg);
+
+        fc.util.lazySegBind(slotSegmentContainer, segs, bindSlotSeg);
 		
 		// record event sides and title positions
 		for (i=0; i<segCnt; i++) {
 			seg = segs[i];
 			if (eventElement = seg.element) {
-				val = vsideCache[key = seg.key = cssKey(eventElement[0])];
+				val = vsideCache[key = seg.key = fc.util.cssKey(eventElement[0])];
 				seg.vsides = val === undefined ? (vsideCache[key] = vsides(eventElement, true)) : val;
 				val = hsideCache[key];
 				seg.hsides = val === undefined ? (hsideCache[key] = hsides(eventElement, true)) : val;
@@ -265,7 +265,7 @@ function AgendaEventRenderer() {
 				if (seg.contentTop !== undefined && height - seg.contentTop < 10) {
 					// not enough room for title, put it in the time (TODO: maybe make both display:inline instead)
 					eventElement.find('div.fc-event-time')
-						.text(formatDate(event.start, opt('timeFormat')) + ' - ' + event.title);
+						.text(fc.dateUtil.formatDate(event.start, opt('timeFormat')) + ' - ' + event.title);
 					eventElement.find('div.fc-event-title')
 						.remove();
 				}
@@ -279,7 +279,7 @@ function AgendaEventRenderer() {
 	function slotSegHtml(event, seg) {
 		var html = "<";
 		var url = event.url;
-		var skinCss = getSkinCss(event, opt);
+		var skinCss = fc.util.getSkinCss(event, t);
 		var classes = ['fc-event', 'fc-event-vert'];
 		if (isEventDraggable(event)) {
 			classes.push('fc-event-draggable');
@@ -295,7 +295,7 @@ function AgendaEventRenderer() {
 			classes = classes.concat(event.source.className || []);
 		}
 		if (url) {
-			html += "a href='" + htmlEscape(event.url) + "'";
+			html += "a href='" + _.string.escapeHTML(event.url) + "'";
 		}else{
 			html += "div";
 		}
@@ -305,10 +305,10 @@ function AgendaEventRenderer() {
 			">" +
 			"<div class='fc-event-inner'>" +
 			"<div class='fc-event-time'>" +
-			htmlEscape(formatDates(event.start, event.end, opt('timeFormat'))) +
+                _.string.escapeHTML(fc.dateUtil.formatDates(event.start, event.end, opt('timeFormat'))) +
 			"</div>" +
 			"<div class='fc-event-title'>" +
-			htmlEscape(event.title) +
+                _.string.escapeHTML(event.title) +
 			"</div>" +
 			"</div>" +
 			"<div class='fc-event-bg'></div>";
@@ -381,8 +381,8 @@ function AgendaEventRenderer() {
 						if (!cell.row) {
 							// on full-days
 							renderDayOverlay(
-								addDays(cloneDate(event.start), dayDelta),
-								addDays(exclEndDay(event), dayDelta)
+                                fc.dateUtil.addDays(fc.dateUtil.cloneDate(event.start), dayDelta),
+                                fc.dateUtil.addDays(fc.util.exclEndDay(event), dayDelta)
 							);
 							resetElement();
 						}else{
@@ -391,7 +391,7 @@ function AgendaEventRenderer() {
 								if (allDay) {
 									// convert event to temporary slot-event
 									eventElement.width(colWidth - 10); // don't use entire width
-									setOuterHeight(
+                                    fc.util.setOuterHeight(
 										eventElement,
 										snapHeight * Math.round(
 											(event.end ? ((event.end - event.start) / MINUTE_MS) : opt('defaultEventMinutes')) /
@@ -489,8 +489,8 @@ function AgendaEventRenderer() {
 								eventElement.draggable('option', 'grid', null);
 							}
 							renderDayOverlay(
-								addDays(cloneDate(event.start), dayDelta),
-								addDays(exclEndDay(event), dayDelta)
+                                fc.dateUtil.addDays(fc.dateUtil.cloneDate(event.start), dayDelta),
+                                fc.dateUtil.addDays(fc.util.exclEndDay(event), dayDelta)
 							);
 						}else{
 							// on slots
@@ -526,12 +526,12 @@ function AgendaEventRenderer() {
 			}
 		});
 		function updateTimeText(minuteDelta) {
-			var newStart = addMinutes(cloneDate(event.start), minuteDelta);
+			var newStart = addMinutes(fc.dateUtil.cloneDate(event.start), minuteDelta);
 			var newEnd;
 			if (event.end) {
-				newEnd = addMinutes(cloneDate(event.end), minuteDelta);
+				newEnd = addMinutes(fc.dateUtil.cloneDate(event.end), minuteDelta);
 			}
-			timeElement.text(formatDates(newStart, newEnd, opt('timeFormat')));
+			timeElement.text(fc.dateUtil.formatDates(newStart, newEnd, opt('timeFormat')));
 		}
 		function resetElement() {
 			// convert back to original slot-event
@@ -604,7 +604,7 @@ function countForwardSegs(levels) {
 			segForward = level[j];
 			for (k=0; k<levels[i-1].length; k++) {
 				segBack = levels[i-1][k];
-				if (segsCollide(segForward, segBack)) {
+				if (fc.util.segsCollide(segForward, segBack)) {
 					segBack.forward = Math.max(segBack.forward||0, (segForward.forward||0)+1);
 				}
 			}

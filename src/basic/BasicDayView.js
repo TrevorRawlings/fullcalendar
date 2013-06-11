@@ -1,5 +1,5 @@
 
-fcViews.basicDay = BasicDayView;
+fc.views.basicDay = BasicDayView;
 
 //TODO: when calendar's date starts out on a weekend, shouldn't happen
 
@@ -16,20 +16,20 @@ function BasicDayView(element, calendar) {
 	BasicView.call(t, element, calendar, 'basicDay');
 	var opt = t.opt;
 	var renderBasic = t.renderBasic;
-	var formatDate = calendar.formatDate;
+	//var formatDate = calendar.formatDate;
 	
 	
 	
 	function render(date, delta) {
 		if (delta) {
-			addDays(date, delta);
+            fc.dateUtil.addDays(date, delta);
 			if (!opt('weekends')) {
-				skipWeekend(date, delta < 0 ? -1 : 1);
+                fc.dateUtil.skipWeekend(date, delta < 0 ? -1 : 1);
 			}
 		}
-		t.title = formatDate(date, opt('titleFormat'));
-		t.start = t.visStart = cloneDate(date, true);
-		t.end = t.visEnd = addDays(cloneDate(t.start), 1);
+		t.title = fc.dateUtil.formatDate(date, opt('titleFormat'));
+		t.start = t.visStart = fc.dateUtil.cloneDate(date, true);
+		t.end = t.visEnd = fc.dateUtil.addDays(fc.dateUtil.cloneDate(t.start), 1);
 		renderBasic(1, 1, false);
 	}
 	

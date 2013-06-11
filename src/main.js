@@ -1,6 +1,5 @@
 
-var fc = $.fullCalendar = { version: "<%= meta.version %>" };
-var fcViews = fc.views = {};
+
 
 
 $.fn.fullCalendar = function(options) {

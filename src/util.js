@@ -1,32 +1,33 @@
 
-fc.applyAll = applyAll;
 
+
+fc.util = {}
 
 /* Event Date Math
 -----------------------------------------------------------------------------*/
 
 
-function exclEndDay(event) {
+fc.util.exclEndDay = function(event) {
 	if (event.end) {
-		return _exclEndDay(event.end, event.allDay);
+		return fc.util._exclEndDay(event.end, event.allDay);
 	}else{
-		return addDays(cloneDate(event.start), 1);
+		return fc.dateUtil.addDays(fc.dateUtil.cloneDate(event.start), 1);
 	}
 }
 
 
-function _exclEndDay(end, allDay) {
-	end = cloneDate(end);
-	return allDay || end.getHours() || end.getMinutes() ? addDays(end, 1) : clearTime(end);
+fc.util._exclEndDay = function(end, allDay) {
+	end = fc.dateUtil.cloneDate(end);
+	return allDay || end.getHours() || end.getMinutes() ? fc.dateUtil.addDays(end, 1) : fc.dateUtil.clearTime(end);
 }
 
 
-function segCmp(a, b) {
+fc.util.segCmp = function(a, b) {
 	return (b.msLength - a.msLength) * 100 + (a.event.start - b.event.start);
 }
 
 
-function segsCollide(seg1, seg2) {
+fc.util.segsCollide = function(seg1, seg2) {
 	return seg1.end > seg2.start && seg1.start < seg2.end;
 }
 
@@ -37,7 +38,7 @@ function segsCollide(seg1, seg2) {
 
 
 // event rendering utilities
-function sliceSegs(events, visEventEnds, start, end) {
+fc.util.sliceSegs = function(events, visEventEnds, start, end) {
 	var segs = [],
 		i, len=events.length, event,
 		eventStart, eventEnd,
@@ -49,14 +50,14 @@ function sliceSegs(events, visEventEnds, start, end) {
 		eventEnd = visEventEnds[i];
 		if (eventEnd > start && eventStart < end) {
 			if (eventStart < start) {
-				segStart = cloneDate(start);
+				segStart = fc.dateUtil.cloneDate(start);
 				isStart = false;
 			}else{
 				segStart = eventStart;
 				isStart = true;
 			}
 			if (eventEnd > end) {
-				segEnd = cloneDate(end);
+				segEnd = fc.dateUtil.cloneDate(end);
 				isEnd = false;
 			}else{
 				segEnd = eventEnd;
@@ -72,12 +73,12 @@ function sliceSegs(events, visEventEnds, start, end) {
 			});
 		}
 	}
-	return segs.sort(segCmp);
+	return segs.sort(fc.util.segCmp);
 }
 
 
 // event rendering calculation utilities
-function stackSegs(segs) {
+fc.util.stackSegs = function(segs) {
 	var levels = [],
 		i, len = segs.length, seg,
 		j, collide, k;
@@ -88,7 +89,7 @@ function stackSegs(segs) {
 			collide = false;
 			if (levels[j]) {
 				for (k=0; k<levels[j].length; k++) {
-					if (segsCollide(levels[j][k], seg)) {
+					if (fc.util.segsCollide(levels[j][k], seg)) {
 						collide = true;
 						break;
 					}
@@ -115,7 +116,7 @@ function stackSegs(segs) {
 -----------------------------------------------------------------------------*/
 
 
-function lazySegBind(container, segs, bindHandlers) {
+fc.util.lazySegBind = function(container, segs, bindHandlers) {
 	container.unbind('mouseover').mouseover(function(ev) {
 		var parent=ev.target, e,
 			i, seg;
@@ -139,69 +140,71 @@ function lazySegBind(container, segs, bindHandlers) {
 -----------------------------------------------------------------------------*/
 
 
-function setOuterWidth(element, width, includeMargins) {
-	for (var i=0, e; i<element.length; i++) {
+fc.util.setOuterWidth = function(element, width, includeMargins) {
+    var len = element.length
+	for (var i=0, e; i<len; i++) {
 		e = $(element[i]);
-		e.width(Math.max(0, width - hsides(e, includeMargins)));
+		e.width(Math.max(0, width - fc.util.hsides(e, includeMargins)));
 	}
 }
 
 
-function setOuterHeight(element, height, includeMargins) {
-	for (var i=0, e; i<element.length; i++) {
+fc.util.setOuterHeight = function(element, height, includeMargins) {
+    var len = element.length
+	for (var i=0, e; i<len; i++) {
 		e = $(element[i]);
-		e.height(Math.max(0, height - vsides(e, includeMargins)));
+		e.height(Math.max(0, height - fc.util.vsides(e, includeMargins)));
 	}
 }
 
 
-function hsides(element, includeMargins) {
-	return hpadding(element) + hborders(element) + (includeMargins ? hmargins(element) : 0);
+fc.util.hsides = function(element, includeMargins) {
+	return fc.util.hpadding(element) + fc.util.hborders(element) + (includeMargins ? fc.util.hmargins(element) : 0);
 }
 
 
-function hpadding(element) {
+fc.util.hpadding = function(element) {
 	return (parseFloat($.css(element[0], 'paddingLeft', true)) || 0) +
 	       (parseFloat($.css(element[0], 'paddingRight', true)) || 0);
 }
 
 
-function hmargins(element) {
+fc.util.hmargins = function(element) {
 	return (parseFloat($.css(element[0], 'marginLeft', true)) || 0) +
 	       (parseFloat($.css(element[0], 'marginRight', true)) || 0);
 }
 
 
-function hborders(element) {
+fc.util.hborders = function(element) {
 	return (parseFloat($.css(element[0], 'borderLeftWidth', true)) || 0) +
 	       (parseFloat($.css(element[0], 'borderRightWidth', true)) || 0);
 }
 
 
-function vsides(element, includeMargins) {
-	return vpadding(element) +  vborders(element) + (includeMargins ? vmargins(element) : 0);
+fc.util.vsides = function(element, includeMargins) {
+	return fc.util.vpadding(element) +  fc.util.vborders(element) + (includeMargins ? fc.util.vmargins(element) : 0);
 }
 
 
-function vpadding(element) {
+fc.util.vpadding = function(element) {
 	return (parseFloat($.css(element[0], 'paddingTop', true)) || 0) +
 	       (parseFloat($.css(element[0], 'paddingBottom', true)) || 0);
 }
 
 
-function vmargins(element) {
+fc.util.vmargins = function(element) {
 	return (parseFloat($.css(element[0], 'marginTop', true)) || 0) +
 	       (parseFloat($.css(element[0], 'marginBottom', true)) || 0);
 }
 
 
-function vborders(element) {
+fc.util.vborders = function(element) {
 	return (parseFloat($.css(element[0], 'borderTopWidth', true)) || 0) +
 	       (parseFloat($.css(element[0], 'borderBottomWidth', true)) || 0);
 }
 
 
-function setMinHeight(element, height) {
+fc.util.setMinHeight = function(element, height) {
 	height = (typeof height == 'number' ? height + 'px' : height);
 	element.each(function(i, _element) {
 		_element.style.cssText += ';min-height:' + height + ';_height:' + height;
@@ -219,25 +222,17 @@ function setMinHeight(element, height) {
 //TODO: isFunction, grep ?
 
 
-function noop() { }
+fc.util.noop = function() { }
 
 
-function cmp(a, b) {
+fc.util.cmp = function(a, b) {
 	return a - b;
 }
 
 
-function arrayMax(a) {
-	return Math.max.apply(Math, a);
-}
 
 
-function zeroPad(n) {
-	return (n < 10 ? '0' : '') + n;
-}
-
-
-function smartProperty(obj, name) { // get a camel-cased/namespaced property of an object
+fc.util.smartProperty = function(obj, name) { // get a camel-cased/namespaced property of an object
 	if (obj[name] !== undefined) {
 		return obj[name];
 	}
@@ -253,23 +248,12 @@ function smartProperty(obj, name) { // get a camel-cased/namespaced property of 
 }
 
 
-function htmlEscape(s) {
-    //	return s.replace(/&/g, '&amp;')
-    //		.replace(/</g, '&lt;')
-    //		.replace(/>/g, '&gt;')
-    //		.replace(/'/g, '&#039;')
-    //		.replace(/"/g, '&quot;')
-    //		.replace(/\n/g, '<br />');
-    return _.string.escapeHTML( s )
-}
-
-
-function cssKey(_element) {
+fc.util.cssKey = function(_element) {
 	return _element.id + '/' + _element.className + '/' + _element.style.cssText.replace(/(^|;)\s*(top|left|width|height)\s*:[^;]*/ig, '');
 }
 
 
-function disableTextSelection(element) {
+fc.util.disableTextSelection = function(element) {
 	element
 		.attr('unselectable', 'on')
 		.css('MozUserSelect', 'none')
@@ -287,7 +271,7 @@ function enableTextSelection(element) {
 */
 
 
-function markFirstLast(e) {
+fc.util.markFirstLast = function(e) {
 	e.children()
 		.removeClass('fc-first fc-last')
 		.filter(':first-child')
@@ -298,7 +282,7 @@ function markFirstLast(e) {
 }
 
 
-function setDayID(cell, date) {
+fc.util.setDayID = function(cell, date) {
 	cell.each(function(i, _cell) {
 		_cell.className = _cell.className.replace(/^fc-\w*/, 'fc-' + dayIDs[date.getDay()]);
 		// TODO: make a way that doesn't rely on order of classes
@@ -306,29 +290,29 @@ function setDayID(cell, date) {
 }
 
 
-function getSkinCss(event, opt) {
+fc.util.getSkinCss = function(event, view) {
 	var source = event.source || {};
 	var eventColor = event.color;
 	var sourceColor = source.color;
-	var optionColor = opt('eventColor');
+	var optionColor = view.opt('eventColor');
 	var backgroundColor =
 		event.backgroundColor ||
 		eventColor ||
 		source.backgroundColor ||
 		sourceColor ||
-		opt('eventBackgroundColor') ||
+        view.opt('eventBackgroundColor') ||
 		optionColor;
 	var borderColor =
 		event.borderColor ||
 		eventColor ||
 		source.borderColor ||
 		sourceColor ||
-		opt('eventBorderColor') ||
+        view.opt('eventBorderColor') ||
 		optionColor;
 	var textColor =
 		event.textColor ||
 		source.textColor ||
-		opt('eventTextColor');
+        view.opt('eventTextColor');
 	var statements = [];
 	if (backgroundColor) {
 		statements.push('background-color:' + backgroundColor);
@@ -343,22 +327,8 @@ function getSkinCss(event, opt) {
 }
 
 
-function applyAll(functions, thisObj, args) {
-	if ($.isFunction(functions)) {
-		functions = [ functions ];
-	}
-	if (functions) {
-		var i;
-		var ret;
-		for (i=0; i<functions.length; i++) {
-			ret = functions[i].apply(thisObj, args) || ret;
-		}
-		return ret;
-	}
-}
 
-
-function firstDefined() {
+fc.util.firstDefined = function() {
 	for (var i=0; i<arguments.length; i++) {
 		if (arguments[i] !== undefined) {
 			return arguments[i];

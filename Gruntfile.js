@@ -44,7 +44,14 @@ module.exports = function(grunt) {
     config.coffee = {
         compile: {
             files: {
-                'build/temp/EventManager.js': 'src/EventManager*.coffee'
+                'build/temp/EventManager.js': 'src/EventManager*.coffee',
+                'build/temp/Calendar.js':     'src/Calendar*.coffee',
+                'build/temp/date_util.js':    'src/date_util*.coffee',
+                'build/temp/Navigate.js':     'src/Navigate*.coffee',
+                'build/temp/BasicView.js':      'src/basic/BasicView*.coffee',
+                'build/temp/MonthView.js':      'src/basic/MonthView*.coffee',
+                'build/temp/CoordinateGrid.js': 'src/common/CoordinateGrid*.coffee',
+                'build/temp/View.js':           'src/common/View*.coffee'
             },
             options: {
                 basePath: 'src/'

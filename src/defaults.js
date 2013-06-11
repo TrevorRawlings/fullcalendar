@@ -1,5 +1,5 @@
 
-var defaults = {
+fc.defaults = {
 
 	// display
 	defaultView: 'month',
@@ -29,17 +29,17 @@ var defaults = {
 	
 	// time formats
 	titleFormat: {
-		month: 'MMMM yyyy',
-		week: "MMM d[ yyyy]{ '&#8212;'[ MMM] d yyyy}",
-		day: 'dddd, MMM d, yyyy'
+		month: 'MMMM YYYY',
+		week: "MMM d YYYY",
+		day: 'dddd, MMM D, YYYY'
 	},
 	columnFormat: {
 		month: 'ddd',
-		week: 'ddd M/d',
-		day: 'dddd M/d'
+		week: 'ddd M/D',
+		day: 'dddd M/D'
 	},
 	timeFormat: { // for event elements
-		'': 'h(:mm)t' // default
+		'': 'h:mma' // default
 	},
 	
 	// locale
@@ -75,7 +75,7 @@ var defaults = {
 };
 
 // right-to-left defaults
-var rtlDefaults = {
+fc.rtlDefaults = {
 	header: {
 		left: 'next,prev today',
 		center: '',

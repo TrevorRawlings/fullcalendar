@@ -12,3 +12,7 @@
  
 (function($, undefined) {
 
+    var fc = $.fullCalendar = { version: "<%= meta.version %>" };
+    fc.views = {};
+
+
