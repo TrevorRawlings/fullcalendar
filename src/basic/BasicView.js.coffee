@@ -103,11 +103,7 @@ class fc.BasicView extends fc.View
         .appendTo(@$el);
 
   center_date: (visStart, visEnd) ->
-    visStart = moment(visStart);
-    visEnd = moment(visEnd);
-    days = visEnd.diff(visStart, 'days');
-    return visStart.clone().add('days', (days / 2)).toDate();
-
+    return fc.dateUtil.center_date(visStart, visEnd)
 
   center_month: ->
     return @center_date(@visStart, @visEnd).getMonth();

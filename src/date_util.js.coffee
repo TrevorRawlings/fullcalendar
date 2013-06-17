@@ -121,6 +121,11 @@ class fc.DateUtil
 
     return m.toDate()
 
+  center_date:  (visStart, visEnd) ->
+    visStart = moment(visStart);
+    visEnd = moment(visEnd);
+    days = visEnd.diff(visStart, 'days');
+    return visStart.clone().add('days', (days / 2)).toDate();
 
 
   #/* Date Parsing

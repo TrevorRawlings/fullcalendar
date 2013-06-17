@@ -107,7 +107,7 @@ class fc.EventManager
       @cache = _.difference(@cache, filter)
     else
       throw "unsupported argument"
-    @calendar.reportEvents(cache);
+    @calendar.reportEvents(@cache);
 
 
   clientEvents: () ->

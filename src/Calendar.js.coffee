@@ -45,7 +45,7 @@ class fc.Calendar extends Backbone.Marionette.Layout
     @resizeUID = 0;
     @ignoreWindowResize = 0;
     @date = new Date();
-    @events = [];
+    @current_events = [];
     @_dragElement= null;
 
     fc.dateUtil.setYMD(@date, options.year, options.month, options.date);
@@ -151,7 +151,7 @@ class fc.Calendar extends Backbone.Marionette.Layout
       @setSize();
       @unselect();
       @currentView.clearEvents();
-      @currentView.renderEvents(@events);
+      @currentView.renderEvents(@current_events);
       @currentView.sizeDirty = false;
 
 
@@ -204,7 +204,7 @@ class fc.Calendar extends Backbone.Marionette.Layout
 
   # called when event data arrives
   reportEvents: (_events) ->
-    @events = _events;
+    @current_events = _events;
     @rerenderEvents();
 
   # called when a single event's data has been changed
@@ -217,7 +217,7 @@ class fc.Calendar extends Backbone.Marionette.Layout
     @markEventsDirty();
     if @elementVisible()
       @currentView.clearEvents();
-      @currentView.renderEvents(@events, modifiedEventID);
+      @currentView.renderEvents(@current_events, modifiedEventID);
       @currentView.eventsDirty = false
 
   markEventsDirty: ->
@@ -268,6 +268,10 @@ class fc.Calendar extends Backbone.Marionette.Layout
     if @header
       @header.destroy();
 
+    @eventManager.removeEvents()
+
+  onClose: ->
+    super
     if @content
       @content.remove();
       @$el.removeClass('fc fc-rtl ui-widget');
@@ -296,74 +300,12 @@ class fc.Calendar extends Backbone.Marionette.Layout
   render: (inc) ->
     if (!@content)
       @initialRender()
-    else
+
+    if @elementVisible()
       @calcSize()
       @markSizesDirty();
       @markEventsDirty();
-      @renderView(inc);
+      @renderView(1);
 
-
-
-
-
-    #		header = new Header(t, options);
-    #		headerElement = header.render();
-    #		if (headerElement)
-    #			@element.prepend(headerElement);
-    #		}
     @changeView(@options.defaultView);
-    #		$(window).resize(windowResize);
-    #		// needed for IE in a 0x0 iframe, b/c when it is resized, never triggers a windowResize
-    #		if (!bodyVisible()) {
-    #			lateRender();
-    #		}
-    #	}
 
-
-
-  #  /* External Dragging
-  #  ------------------------------------------------------------------------*/
-
-  #  if (options.droppable) {
-  #    $(document)
-  #      .bind('dragstart', function(ev, ui) {
-  #        var _e = ev.target;
-  #        var e = $(_e);
-  #        if (!e.parents('.fc').length) { // not already inside a calendar
-  #          var accept = options.dropAccept;
-  #          if ($.isFunction(accept) ? accept.call(_e, e) : e.is(accept)) {
-  #            _dragElement = _e;
-  #            currentView.dragStart(_dragElement, ev, ui);
-  #          }
-  #        }
-  #      })
-  #      .bind('dragstop', function(ev, ui) {
-  #        if (_dragElement) {
-  #          currentView.dragStop(_dragElement, ev, ui);
-  #          _dragElement = null;
-  #        }
-  #      });
-  #  }
-  #
-
-
-#	windowResize() {
-#		if (!ignoreWindowResize) {
-#			if (currentView.start) { // view has already been rendered
-#				var uid = ++resizeUID;
-#				setTimeout(function() { // add a delay
-#					if (uid == resizeUID && !ignoreWindowResize && elementVisible()) {
-#						if (elementOuterWidth != (elementOuterWidth = element.outerWidth())) {
-#							ignoreWindowResize++; // in case the windowResize callback changes the height
-#							c();
-#							currentView.trigger('windowResize', _element);
-#							ignoreWindowResize--;
-#						}
-#					}
-#				}, 200);
-#			}else{
-#				// calendar must have been initialized in a 0x0 iframe that has just been resized
-#				lateRender();
-#			}
-#		}
-#	}
