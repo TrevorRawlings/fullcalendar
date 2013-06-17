@@ -7,7 +7,7 @@
  
 (function($, undefined) {
 
-    var fc = $.fullCalendar = { version: "<%= meta.version %>" };
+    var fc = $.fullCalendar = { version: "1.0" };
     fc.views = {};
 
 
